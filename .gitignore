@@ -1,0 +1,7 @@
+.*.swp
+*.log
+*.key
+*.o
+
+rfc.txt
+sshpot
