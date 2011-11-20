@@ -10,8 +10,6 @@
 
 #define KEYS_FOLDER "./"
 
-/* Keep track of the number of concurrent connections. */
-static int total_connections = 0;
 
 static int cleanup(void) {
     int status;
@@ -20,8 +18,6 @@ static int cleanup(void) {
 
     while ((pid=wait3(&status, WNOHANG, NULL)) > 0) {
         if (DEBUG) { printf("process %d reaped\n", pid); }
-        total_connections--;
-        printf("*** Decrementing total_connections: %d ***\n", total_connections);
     }
 
     /* Re-install myself for the next child */
@@ -61,7 +57,6 @@ int main(int argc, char **argv) {
             return -1;
         }
         if (DEBUG) { printf("Accepted a connection.\n"); }
-        total_connections++;
 
         //Fork here.
         switch (fork())  {
@@ -70,16 +65,7 @@ int main(int argc, char **argv) {
                 exit(-1);
 
             case 0:
-                printf("*** Total connections = %d ***\n", total_connections);
-                if (total_connections > MAXCONNECTIONS) {
-                    printf("Too many connections!\n");
-                    /* This causes the client to hang. */
-                    ssh_disconnect(session);
-                }
-                else {
-                    child_ret = handle_auth(session);
-                }
-                exit(child_ret);
+                exit(handle_auth(session));
 
             default:
                 break;
