@@ -11,6 +11,9 @@
 #define KEYS_FOLDER "./"
 
 
+/* SIGCHILD handler for cleaning up after children. We want to do cleanup
+ * at SIGCHILD instead of waiting in main so we can accept multiple
+ * simultaneous connections. */
 static int cleanup(void) {
     int status;
     int pid;
@@ -43,17 +46,17 @@ int main(int argc, char **argv) {
     ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_RSAKEY, KEYS_FOLDER "sshpot.rsa.key");
 
     /* Listen on PORT for connections. */
-    if (DEBUG) { printf("Listening on %s.\n", PORT); }
     if (ssh_bind_listen(sshbind) < 0) {
         printf("Error listening to socket: %s\n",ssh_get_error(sshbind));
         return 1;
     }
+    if (DEBUG) { printf("Listening on %s.\n", PORT); }
 
     //Loop here.
     while (1) {
         /* Wait for a connection. */
         if (ssh_bind_accept(sshbind, session) == SSH_ERROR) {
-            printf("Error accepting a connection: %s\n",ssh_get_error(sshbind));
+            fprintf(stderr, "Error accepting a connection: `%s'.\n",ssh_get_error(sshbind));
             return -1;
         }
         if (DEBUG) { printf("Accepted a connection.\n"); }
@@ -61,7 +64,7 @@ int main(int argc, char **argv) {
         //Fork here.
         switch (fork())  {
             case -1:
-                fprintf(stderr,"fork returned error #%d\n",-1);
+                fprintf(stderr,"Fork returned error: `%d'.\n",-1);
                 exit(-1);
 
             case 0:

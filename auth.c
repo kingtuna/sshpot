@@ -4,28 +4,25 @@
 
 #include <stdio.h>
 
-
+/* Logs password auth attempts. Always replies with SSH_MESSAGE_USERAUTH_FAILURE. */
 int handle_auth(ssh_session session) {
     ssh_message message;
-    int auth_attempt = 0;
 
     /* Perform key exchange. */
-    if (DEBUG) { printf("Connection established, performing key exchange.\n"); }
     if (ssh_handle_key_exchange(session)) {
-        printf("ssh_handle_key_exchange: %s\n", ssh_get_error(session));
+        fprintf(stderr, "Error exchanging keys: `%s'.\n", ssh_get_error(session));
         return -1;
     }
+    if (DEBUG) { printf("Successful key exchange.\n"); }
 
     /* Send the default reply until we get an auth attempt. Log the attempt and quit. */
     while (!auth_attempt) {
-        /* Get the message. */
         if ((message = ssh_message_get(session)) == 0) { 
             break;
         }
 
         /* Log the authentication request and disconnect. */
         if (ssh_message_subtype(message) == SSH_AUTH_METHOD_PASSWORD) {
-//          auth_attempt = 1;
             printf("%s %s\n", ssh_message_auth_user(message), ssh_message_auth_password(message));
         }
 
@@ -37,5 +34,3 @@ int handle_auth(ssh_session session) {
     if (DEBUG) { printf("Exiting child.\n"); }
     return 0;
 }
-
-
