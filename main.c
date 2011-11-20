@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_RSAKEY, KEYS_FOLDER "sshpot.rsa.key");
 
     /* Listen on PORT for connections. */
-    printf("Listening on %s.\n", PORT);
+    if (DEBUG) { printf("Listening on %s.\n", PORT); }
     if (ssh_bind_listen(sshbind) < 0) {
         printf("Error listening to socket: %s\n",ssh_get_error(sshbind));
         return 1;
@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     while (1) {
     
         /* Wait for a connection. */
-        printf("Accepted a connection.\n");
+        if (DEBUG) { printf("Accepted a connection.\n"); }
         if (ssh_bind_accept(sshbind, session) == SSH_ERROR) {
         printf("error accepting a connection : %s\n",ssh_get_error(sshbind));
         return 1;

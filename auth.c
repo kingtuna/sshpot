@@ -1,13 +1,16 @@
+#include "config.h"
+
 #include <libssh/server.h>
 
 #include <stdio.h>
+
 
 int handle_auth(ssh_session session) {
     ssh_message message;
     int auth_attempt = 0;
 
     /* Perform key exchange. */
-    printf("Connection established, performing key exchange.\n");
+    if (DEBUG) { printf("Connection established, performing key exchange.\n"); }
     if (ssh_handle_key_exchange(session)) {
         printf("ssh_handle_key_exchange: %s\n", ssh_get_error(session));
         return -1;
@@ -31,7 +34,7 @@ int handle_auth(ssh_session session) {
         ssh_message_free(message);
     }
 
-    printf("Exiting child.\n");
+    if (DEBUG) { printf("Exiting child.\n"); }
     return 0;
 }
 
