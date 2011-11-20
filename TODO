@@ -1,0 +1,3 @@
+Allow a configurable number of authentication attempts.
+Allow a configurable number of simultaneous sessions.
+Check for memory leaks with valgrind.
