@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #define LISTENADDRESS   "localhost"
-#define DEFAULTPORT     2200
+#define DEFAULTPORT     22
 #define DEBUG           1
 
 #endif

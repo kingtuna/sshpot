@@ -20,7 +20,7 @@ static void usage(FILE *stream, int exit_code) {
     fprintf(stream, "Usage: sshpot [options]\n");
     fprintf(stream, "[options]\n"
             "   -h  --help          Display this usage information.\n"
-            "   -p  --port <port>   Port to listen on; defaults to 2200.\n");
+            "   -p  --port <port>   Port to listen on; defaults to 22.\n");
     exit(exit_code);
 }
 
