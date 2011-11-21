@@ -16,6 +16,7 @@
 #define MAXPORT 65535
 
 
+/* Print usage information to `stream', exit with `exit_code'. */
 static void usage(FILE *stream, int exit_code) {
     fprintf(stream, "Usage: sshpot [options]\n");
     fprintf(stream, "[options]\n"
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
     ssh_bind sshbind;
     int port = DEFAULTPORT;
 
-    /* Handle arguments. */
+    /* Handle command line options. */
     int next_opt = 0;
     const char *short_opts = "hp:";
     const struct option long_opts[] = {
