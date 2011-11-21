@@ -16,7 +16,7 @@ int handle_auth(ssh_session session) {
     if (DEBUG) { printf("Successful key exchange.\n"); }
 
     /* Send the default reply until we get an auth attempt. Log the attempt and quit. */
-    while (!auth_attempt) {
+    while (1) {
         if ((message = ssh_message_get(session)) == 0) { 
             break;
         }
