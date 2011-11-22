@@ -51,20 +51,22 @@ int handle_auth(ssh_session session) {
     }
     if (DEBUG) { printf("Successful key exchange.\n"); }
 
-    /* Send the default reply until we get an auth attempt. Log the attempt and quit. */
+    /* Wait for a message, which should be an authentication attempt. Send the default
+     * reply if it isn't. Log the attempt and quit. */
     while (1) {
-        if ((message = ssh_message_get(session)) == 0) { 
+        if ((message = ssh_message_get(session)) == NULL) {
             break;
         }
 
         /* Log the authentication request and disconnect. */
         if (ssh_message_subtype(message) == SSH_AUTH_METHOD_PASSWORD) {
-            if (get_utc(c_time) == NULL) {
-                fprintf(stderr, "Error getting time.\n");
-                return -1;
-            }
-            printf("%s %s %s %s\n", c_time, get_client_ip(session, c_addr), 
+            if (get_utc(c_time) != NULL) {
+                printf("%s %s %s %s\n", c_time, get_client_ip(session, c_addr),
                     ssh_message_auth_user(message), ssh_message_auth_password(message));
+            }
+            else {
+                fprintf(stderr, "Error getting time.\n");
+            }
         }
 
         /* Send the default message regardless of the request type. */

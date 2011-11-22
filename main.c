@@ -15,6 +15,10 @@
 #define MINPORT 0
 #define MAXPORT 65535
 
+/* Global so they can be cleaned up at SIGINT. */
+static ssh_session session;
+static ssh_bind sshbind;
+
 
 /* Print usage information to `stream', exit with `exit_code'. */
 static void usage(FILE *stream, int exit_code) {
@@ -28,8 +32,7 @@ static void usage(FILE *stream, int exit_code) {
 
 /* Return the c-string `p' as an int if it is a valid port 
  * in the range of MINPORT - MAXPORT, or -1 if invalid. */
-static int valid_port(char *p)
-{
+static int valid_port(char *p) {
     int port;
     char *endptr;
 
@@ -60,9 +63,16 @@ static int cleanup(void) {
 }
 
 
+/* SIGINT handler. Cleanup the ssh* objects and exit. */
+static void wrapup(void) {
+    ssh_disconnect(session);
+    ssh_bind_free(sshbind);
+    ssh_finalize();
+    exit(0);
+}
+
+
 int main(int argc, char *argv[]) {
-    ssh_session session;
-    ssh_bind sshbind;
     int port = DEFAULTPORT;
 
     /* Handle command line options. */
@@ -107,8 +117,9 @@ int main(int argc, char *argv[]) {
         usage(stderr, 1);
     }
 
-    /* Install the handler to cleanup after children. */
+    /* Install the signal handlers to cleanup after children and at exit. */
     signal(SIGCHLD, (void (*)())cleanup);
+    signal(SIGINT, (void(*)())wrapup);
 
     /* Create and configure the ssh session. */
     session=ssh_new();
@@ -145,10 +156,6 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
-
-    ssh_disconnect(session);
-    ssh_bind_free(sshbind);
-    ssh_finalize();
 
     return 0;
 }
