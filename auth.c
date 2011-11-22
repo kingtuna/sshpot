@@ -10,31 +10,28 @@
 
 #define MAXBUF 100
 
+
 /* Stores the current UTC time in buf. */
 static char *get_utc(char *buf) {
     time_t t;
-    struct tm *utc;
 
     t = time(NULL);
-    utc = gmtime(&t);
-    if (strftime(buf, MAXBUF, "%Y%m%d %H:%M:%S", utc) == 0) {
+    if (strftime(buf, MAXBUF, "%Y%m%d %H:%M:%S", gmtime(&t)) == 0) {
         buf = NULL;
     }
+
     return buf;
 }
 
 
 /* Stores the client's IP address in buf. */
 static char *get_client_ip(ssh_session session, char *buf) {
-    struct sockaddr_storage addr;
+    struct sockaddr_storage tmp;
     struct sockaddr_in *sock;
     unsigned int len = MAXBUF;
-    int s;
 
-    s = ssh_get_fd(session);
-    getpeername(s, (struct sockaddr*)&addr, &len);
-
-    sock = (struct sockaddr_in *)&addr;
+    getpeername(ssh_get_fd(session), (struct sockaddr*)&tmp, &len);
+    sock = (struct sockaddr_in *)&tmp;
     inet_ntop(AF_INET, &sock->sin_addr, buf, len);
 
     return buf;
