@@ -3,6 +3,6 @@
 
 #define LISTENADDRESS   "0.0.0.0"
 #define DEFAULTPORT     22
-#define DEBUG           1
+#define DEBUG           0
 
 #endif

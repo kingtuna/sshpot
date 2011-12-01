@@ -12,7 +12,7 @@ sshpot: main.o auth.o
 main.o: main.c config.h
 	$(CC) $(CFLAGS) -c main.c
 
-auth.o: auth.c auth.h
+auth.o: auth.c auth.h config.h
 	$(CC) $(CFLAGS) -c auth.c
 
 install:
