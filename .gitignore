@@ -4,4 +4,5 @@
 *.o
 
 rfc.txt
+libssh*
 sshpot
