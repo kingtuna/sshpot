@@ -11,6 +11,22 @@
 #define MAXBUF 100
 
 
+/* Write interesting information about a connection attempt to  LOGFILE. */
+static int log_attempt(char *time, char *ip, char *user, char *pass) {
+    FILE *f;
+    int r;
+
+    if ((f = fopen(LOGFILE, "a+")) == NULL) {
+        return -1;
+    }
+
+    if (DEBUG) { printf("%s %s %s %s\n", time, ip, user, pass); }
+    r = fprintf(f, "%s %s %s %s\n", time, ip, user, pass);
+    fclose(f);
+    return r;
+}
+
+
 /* Stores the current UTC time in buf. */
 static char *get_utc(char *buf) {
     time_t t;
@@ -61,7 +77,7 @@ int handle_auth(ssh_session session) {
         /* Log the authentication request and disconnect. */
         if (ssh_message_subtype(message) == SSH_AUTH_METHOD_PASSWORD) {
             if (get_utc(c_time) != NULL) {
-                printf("%s %s %s %s\n", c_time, get_client_ip(session, c_addr),
+                log_attempt(c_time, get_client_ip(session, c_addr),
                     ssh_message_auth_user(message), ssh_message_auth_password(message));
             }
             else {
