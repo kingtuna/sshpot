@@ -11,7 +11,6 @@
 #include <errno.h>
 #include <sys/wait.h>
 
-#define KEYS_FOLDER "./"
 #define MINPORT 0
 #define MAXPORT 65535
 
@@ -126,8 +125,8 @@ int main(int argc, char *argv[]) {
     sshbind=ssh_bind_new();
     ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_BINDADDR, LISTENADDRESS);
     ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_BINDPORT, &port);
-    ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_DSAKEY, KEYS_FOLDER "sshpot.dsa.key");
-    ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_RSAKEY, KEYS_FOLDER "sshpot.rsa.key");
+    ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_HOSTKEY, "ssh-rsa");
+    ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_RSAKEY,RSA_KEYFILE);
 
     /* Listen on `port' for connections. */
     if (ssh_bind_listen(sshbind) < 0) {
