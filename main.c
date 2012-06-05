@@ -22,8 +22,8 @@ static ssh_bind sshbind;
 
 /* Print usage information to `stream', exit with `exit_code'. */
 static void usage(FILE *stream, int exit_code) {
-    fprintf(stream, "Usage: sshpot [options]\n");
-    fprintf(stream, "[options]\n"
+    fprintf(stream, "Usage: sshpot [-h] [-p <port>]\n");
+    fprintf(stream,
             "   -h  --help          Display this usage information.\n"
             "   -p  --port <port>   Port to listen on; defaults to 22.\n");
     exit(exit_code);
