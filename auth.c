@@ -32,7 +32,7 @@ static char *get_utc(char *buf) {
     time_t t;
 
     t = time(NULL);
-    if (strftime(buf, MAXBUF, "%Y%m%d %H:%M:%S", gmtime(&t)) == 0) {
+    if (strftime(buf, MAXBUF, "%Y-%m-%d %H:%M:%S", gmtime(&t)) == 0) {
         buf = NULL;
     }
 
