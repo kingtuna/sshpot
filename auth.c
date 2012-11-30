@@ -20,7 +20,7 @@ static int get_utc(struct connection *c) {
 
 
 /* Stores the client's IP address in the connection sruct. */
-static int *get_client_ip(struct connection * c) {
+static int *get_client_ip(struct connection *c) {
     struct sockaddr_storage tmp;
     struct sockaddr_in *sock;
     unsigned int len = MAXBUF;
@@ -35,7 +35,7 @@ static int *get_client_ip(struct connection * c) {
 
 /* Write interesting information about a connection attempt to  LOGFILE. 
  * Returns -1 on error. */
-static int log_attempt(struct connection *c) { //char *time, char *ip, char *user, char *pass) {
+static int log_attempt(struct connection *c) {
     FILE *f;
     int r;
 
