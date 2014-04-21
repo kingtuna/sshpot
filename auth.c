@@ -58,7 +58,7 @@ static int log_attempt(struct connection *c) {
     c->pass = ssh_message_auth_password(c->message);
 
     if (DEBUG) { printf("%s %s %s %s\n", c->con_time, c->client_ip, c->user, c->pass); }
-    r = fprintf(f, "%s %s %s %s\n", c->con_time, c->client_ip, c->user, c->pass);
+    r = fprintf(f, "%s\t%s\t%s\t%s\t\n", c->con_time, c->client_ip, c->user, c->pass);
     fclose(f);
     return r;
 }
